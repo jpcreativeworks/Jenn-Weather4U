@@ -19,12 +19,13 @@ function doSearch(searchVal) {
             .then(response => response.json())
             .then(response => {
                 console.log(response);
-                document.getElementById("weather-results").innerHTML = response.current.feelslike_f + "°F";
-                document.getElementById("humidity-results").innerHTML = response.current.humidity + "%";
-                document.getElementById("wind-mph").innerHTML = response.current.wind_mph + "mph";
-                document.getElementById("uv-index").innerHTML = response.current.uv;
-                document.getElementById("city-name").innerHTML = response.location.name;
-                document.getElementById("local-date").innerHTML = response.location.localtime;
+                document.getElementById("weather-results").innerHTML = "Temp: " + response.current.feelslike_f + "°F";
+                document.getElementById("humidity-results").innerHTML = "Humidity: " + response.current.humidity + "%";
+                document.getElementById("wind-mph").innerHTML = "Wind: " + response.current.wind_mph + "mph";
+                document.getElementById("uv-index").innerHTML = "UV Index: " + response.current.uv;
+                document.getElementById("city-name").innerHTML = response.location.name + ", " + response.location.region;
+                document.getElementById("local-date").innerHTML = response.forecast.forecastday[0].date;
+                
                 
              localStorage.setItem("searchCity", cityLocation);
                 if(localStorage.getItem("search-history")) {
