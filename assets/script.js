@@ -51,8 +51,10 @@ document.getElementById("search-click").addEventListener("click", function(event
     event.preventDefault();
     doSearch(undefined);
 });
+
+
 function fiveDayForecast(lat, lon) {
-    fetch (`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&APPID=7a05364dc885a8a74ed9af73a8a2d7fc`).then(result => {
+    fetch (`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&APPID=7a05364dc885a8a74ed9af73a8a2d7fc&units=imperial`).then(result => {
         return result.json();
     }).then(response => {
         console.log(response);
@@ -60,10 +62,10 @@ function fiveDayForecast(lat, lon) {
             let date = new Date(day.dt * 1000);
             console.log(index);
             if (index < 5) {
-                document.getElementById(`day-${index+1}-date`).innerHTML = date.getFullYear()+'/'+date.getMonth()+'/'+date.getDay();
-                document.getElementById(`day-${index+1}-uv`).innerHTML = day.uvi;
-                document.getElementById(`day-${index+1}-wind`).innerHTML = day.wind_speed;
-                document.getElementById(`day-${index+1}-temp`).innerHTML = day.temp.day;
+                document.getElementById(`day-${index+1}-date`).innerHTML = date.getFullYear()+'/'+date.getMonth(4)+'/'+date.getDay();
+                document.getElementById(`day-${index+1}-uv`).innerHTML = "UV Index: " + day.uvi;
+                document.getElementById(`day-${index+1}-wind`).innerHTML = "Wind: " + day.wind_speed;
+                document.getElementById(`day-${index+1}-temp`).innerHTML = "Temp: " + day.temp.day + "°F";
                 document.getElementById(`day-${index+1}-icon`).innerHTML = "<img src='http://openweathermap.org/img/wn/"+day.weather[0].icon+"@2x.png'>";
             }
         });
