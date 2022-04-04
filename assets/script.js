@@ -1,24 +1,75 @@
 
-
-document.getElementById("search-click").addEventListener("click", function() {
-    const cityLocation = document.getElementById("city-input").value;
-    console.log(cityLocation);
-    const options = {
-        method: 'GET',
-        headers: {
-            'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
-            'X-RapidAPI-Key': '35ab0c20c2msh09b757063fe5943p1774f6jsn6adb7f071aa1'
+function doSearch(searchVal) {
+        let cityLocation;
+        if (searchVal === undefined) {
+            cityLocation = document.getElementById("city-input").value;
+        } else {
+            cityLocation = searchVal;
         }
-    };
-    
-    fetch(`https://weatherapi-com.p.rapidapi.com/forecast.json?q=${cityLocation}%20&days=5`, options)
-        .then(response => response.json())
-        .then(response => {
-            console.log(response)
-            
-        })
-        .catch(err => console.error(err));
+        console.log(cityLocation);
+        const options = {
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
+                'X-RapidAPI-Key': '35ab0c20c2msh09b757063fe5943p1774f6jsn6adb7f071aa1'
+            }
+        };
+        
+        fetch(`https://weatherapi-com.p.rapidapi.com/forecast.json?q=${cityLocation}%20&days=5`, options)
+            .then(response => response.json())
+            .then(response => {
+                console.log(response);
+                document.getElementById("weather-results").innerHTML = response.current.feelslike_f + "°F";
+                document.getElementById("humidity-results").innerHTML = response.current.humidity + "%";
+                document.getElementById("wind-mph").innerHTML = response.current.wind_mph + "mph";
+                document.getElementById("uv-index").innerHTML = response.current.uv;
+                document.getElementById("city-name").innerHTML = response.location.name;
+                document.getElementById("local-date").innerHTML = response.location.localtime;
+                
+             localStorage.setItem("searchCity", cityLocation);
+                if(localStorage.getItem("search-history")) {
+                     localStorage.setItem("search-history", response.location.name)
+                    
+                 };
+                fiveDayForecast(response.location.lat, response.location.lon);
+                
+                
+            })
+            .catch(err => console.error(err));
+
+}
+
+document.getElementsByClassName('history')[0].addEventListener("click",function(event) {
+    event.preventDefault();
+    console.log(event);
+    console.log(event.srcElement.innerText);
+    doSearch(event.srcElement.innerText);
+})
+//search
+document.getElementById("search-click").addEventListener("click", function(event) {
+    event.preventDefault();
+    doSearch(undefined);
 });
+function fiveDayForecast(lat, lon) {
+    fetch (`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&APPID=7a05364dc885a8a74ed9af73a8a2d7fc`).then(result => {
+        return result.json();
+    }).then(response => {
+        console.log(response);
+        response.daily.forEach((day,index)=> {
+            let date = new Date(day.dt * 1000);
+            console.log(index);
+            if (index < 5) {
+                document.getElementById(`day-${index+1}-date`).innerHTML = date.getFullYear()+'/'+date.getMonth()+'/'+date.getDay();
+                document.getElementById(`day-${index+1}-uv`).innerHTML = day.uvi;
+                document.getElementById(`day-${index+1}-wind`).innerHTML = day.wind_speed;
+                document.getElementById(`day-${index+1}-temp`).innerHTML = day.temp.day;
+                document.getElementById(`day-${index+1}-icon`).innerHTML = "<img src='http://openweathermap.org/img/wn/"+day.weather[0].icon+"@2x.png'>";
+            }
+        });
+    });
+
+}
+
 
 // const options = {
 // 	method: 'GET',
@@ -34,4 +85,18 @@ document.getElementById("search-click").addEventListener("click", function() {
 //         console.log(response)
 
 //     })
+
+// localStorage.setItem('mailbox-1', 'paper');
+// undefined
+// localStorage.getItem('mailbox-1')
+// 'paper'
+// localStorage.setItem('mailbox-1', localStorage.getItem('mailbox-1') + ',paper');
+// undefined
+// localStorage.getItem('mailbox-1')
+// 'paper,paper'
+// localStorage.getItem('mailbox-1').split(',')
+// (2) ['paper', 'paper']
+// for (var i = 0; i < localStorage.getItem('mailbox-1').split(',').length; i++) {
+//     document.getElementById("id").innerHTML += <p>ocalStorage.getItem('mailbox-1').split(',')[i]</p>
+// VM1432:2 Uncaught SyntaxError: Unexpected token '<'
 // 	.catch(err => console.error(err));
