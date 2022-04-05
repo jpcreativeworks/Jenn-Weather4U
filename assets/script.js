@@ -60,9 +60,12 @@ function fiveDayForecast(lat, lon) {
         console.log(response);
         response.daily.forEach((day,index)=> {
             let date = new Date(day.dt * 1000);
+            console.log(day.dt)
             console.log(index);
             if (index < 5) {
-                document.getElementById(`day-${index+1}-date`).innerHTML = date.getFullYear()+'/'+date.getMonth(4)+'/'+date.getDay();
+
+                
+                document.getElementById(`day-${index+1}-date`).innerHTML = date.toDateString();//date.getFullYear()+'/'+date.getMonth()+'/'+date.getDay();
                 document.getElementById(`day-${index+1}-uv`).innerHTML = "UV Index: " + day.uvi;
                 document.getElementById(`day-${index+1}-wind`).innerHTML = "Wind: " + day.wind_speed;
                 document.getElementById(`day-${index+1}-temp`).innerHTML = "Temp: " + day.temp.day + "°F";
