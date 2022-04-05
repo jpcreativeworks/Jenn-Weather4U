@@ -27,11 +27,7 @@ function doSearch(searchVal) {
                 document.getElementById("local-date").innerHTML = response.forecast.forecastday[0].date;
                 
                 
-             localStorage.setItem("searchCity", cityLocation);
-                if(localStorage.getItem("search-history")) {
-                     localStorage.setItem("search-history", response.location.name)
-                    
-                 };
+            
                 fiveDayForecast(response.location.lat, response.location.lon);
                 
                 
@@ -40,16 +36,36 @@ function doSearch(searchVal) {
 
 }
 
+
 document.getElementsByClassName('history')[0].addEventListener("click",function(event) {
     event.preventDefault();
-    console.log(event);
-    console.log(event.srcElement.innerText);
-    doSearch(event.srcElement.innerText);
+    var splitRecall = localStorage.getItem('search-history').split(',');
+    document.getElementById("history-listed").innerHTML = '';
+    
+    for (var i = 0; i < splitRecall.length; i++) {
+        console.log(splitRecall[i]);
+        document.getElementById("history-listed").innerHTML += '<li>' + splitRecall[i] + '</li>';
+        
+    }
+
+    // console.log(event);
+    // console.log(event.srcElement.innerText);
+    // doSearch(event.srcElement.innerText);
 })
 //search
 document.getElementById("search-click").addEventListener("click", function(event) {
     event.preventDefault();
     doSearch(undefined);
+    //localStorage.setItem("searchCity", cityLocation);
+    var cityLocation = document.getElementById("city-input").value;
+
+    if(localStorage.getItem("search-history")) {
+        var previousSearches = localStorage.getItem('search-history');
+        
+         localStorage.setItem("search-history", previousSearches + ',' + cityLocation);
+    } else {
+        localStorage.setItem("search-history", cityLocation);        
+     };
 });
 
 
@@ -63,8 +79,6 @@ function fiveDayForecast(lat, lon) {
             console.log(day.dt)
             console.log(index);
             if (index < 5) {
-
-                
                 document.getElementById(`day-${index+1}-date`).innerHTML = date.toDateString();//date.getFullYear()+'/'+date.getMonth()+'/'+date.getDay();
                 document.getElementById(`day-${index+1}-uv`).innerHTML = "UV Index: " + day.uvi;
                 document.getElementById(`day-${index+1}-wind`).innerHTML = "Wind: " + day.wind_speed;
